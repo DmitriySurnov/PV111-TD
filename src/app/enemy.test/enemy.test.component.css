@@ -1,0 +1,9 @@
+.Enemy{
+  position: absolute;
+  left: 0;
+}
+
+.Enemy img {
+  position: relative;
+}
+
