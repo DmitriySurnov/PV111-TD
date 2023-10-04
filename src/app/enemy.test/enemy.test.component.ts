@@ -9,10 +9,12 @@ export class EnemyTestComponent implements AfterViewInit {
   @ViewChild('EnemyImg') _enemyImg: ElementRef;
   public _x:number;
   public _y:number;
+  private _turn:number;
 
   public constructor() {
     this._x = 0;
     this._y = 0;
+    this._turn=0;
     this._enemyImg = ViewChild("EnemyImg")
   }
 
@@ -27,6 +29,16 @@ export class EnemyTestComponent implements AfterViewInit {
       this._y =0;
     this._enemyImg.nativeElement.style.top = `${this._y}px`;
     this._enemyImg.nativeElement.style.left = `${this._x}px`;
+
+    setInterval(function (_this:EnemyTestComponent) {
+     if((_this._x < Math.trunc((pageWidth/2)+15)) ||
+       (_this._y > Math.trunc((pageHeight/2)-45)))
+       _this._turn+=1;
+     else
+       _this._turn-=1;
+
+      _this._enemyImg.nativeElement.style.transform = `rotate(${_this._turn}deg)`;
+    },1,this)
 
 
     setInterval(function (_this:EnemyTestComponent, pageWidth:number, pageHeight:number) {
@@ -73,8 +85,8 @@ export class EnemyTestComponent implements AfterViewInit {
       if (_this._y < 0)
         _this._y =0;
 
-      _this._enemyImg.nativeElement.style.top = `${_this._y}px`;
-      _this._enemyImg.nativeElement.style.left = `${_this._x}px`;
+       _this._enemyImg.nativeElement.style.top = `${_this._y}px`;
+       _this._enemyImg.nativeElement.style.left = `${_this._x}px`;
     },10,this,pageWidth,pageHeight)
   }
 
