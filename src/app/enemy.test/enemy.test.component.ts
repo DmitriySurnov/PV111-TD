@@ -1,4 +1,5 @@
 import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {EnemyMovement} from "../../AngularClasses/enemy-movement";
 
 @Component({
   selector: 'app-enemy-test',
@@ -7,32 +8,25 @@ import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 })
 export class EnemyTestComponent implements AfterViewInit {
   @ViewChild('EnemyImg') _enemyImg: ElementRef;
-  public _x:number;
-  public _y:number;
+  public Position:EnemyMovement;
   private _turn:number;
 
   public constructor() {
-    this._x = 0;
-    this._y = 0;
+    this.Position=new EnemyMovement();
     this._turn=0;
     this._enemyImg = ViewChild("EnemyImg")
   }
 
   ngAfterViewInit(): void {
-    let pageWidth:number = window.innerWidth;
-    let pageHeight:number = window.innerHeight;
-    this._x = Math.trunc(Math.random()*pageWidth-35);
-    this._y = Math.trunc(Math.random()*pageHeight-152);
-    if (this._x < 0)
-      this._x =0;
-    if (this._y < 0)
-      this._y =0;
-    this._enemyImg.nativeElement.style.top = `${this._y}px`;
-    this._enemyImg.nativeElement.style.left = `${this._x}px`;
+
+    this.Position=new EnemyMovement(window.innerWidth,window.innerHeight);
+
+    this._enemyImg.nativeElement.style.top = `${this.Position.Y}px`;
+    this._enemyImg.nativeElement.style.left = `${this.Position.X}px`;
 
     setInterval(function (_this:EnemyTestComponent) {
-     if((_this._x < Math.trunc((pageWidth/2)+15)) ||
-       (_this._y > Math.trunc((pageHeight/2)-45)))
+     if((_this.Position.X < Math.trunc((window.innerWidth/2)+15)) ||
+       (_this.Position.Y > Math.trunc((window.innerHeight/2)-45)))
        _this._turn+=1;
      else
        _this._turn-=1;
@@ -41,53 +35,11 @@ export class EnemyTestComponent implements AfterViewInit {
     },1,this)
 
 
-    setInterval(function (_this:EnemyTestComponent, pageWidth:number, pageHeight:number) {
-      if (_this._x != Math.trunc((pageWidth/2)+15)) {
-        if (_this._x < Math.trunc((pageWidth/2)+15))
-          _this._x+=1;
-        else{
-          _this._x-=1;
-        }
-      }
-      if (_this._y != Math.trunc((pageHeight/2)-45)) {
-        if (_this._y < Math.trunc((pageHeight/2)-45))
-          _this._y+=1;
-        else
-          _this._y-=1;
-      }
-
-      if ((_this._x == Math.trunc((pageWidth/2)+15)) &&
-        (_this._y == Math.trunc((pageHeight/2)-45))){
-        let side = Math.trunc(Math.random()*4);
-        console.log("side=", side);
-
-        switch (side){
-          case  0://top
-            _this._x = Math.trunc(Math.random()*pageWidth-35);
-            _this._y = 0;
-            break;
-          case  1://bottom
-            _this._x = Math.trunc(Math.random()*pageWidth-35);
-            _this._y = pageHeight-152;
-            break;
-          case  2://left
-            _this._x = 0;
-            _this._y = Math.trunc(Math.random()*pageHeight-152);
-            break;
-          case  3://right
-            _this._x = pageWidth-35;
-            _this._y = Math.trunc(Math.random()*pageHeight-152);
-            break;
-        }
-      }
-      if (_this._x < 0)
-        _this._x =0;
-      if (_this._y < 0)
-        _this._y =0;
-
-       _this._enemyImg.nativeElement.style.top = `${_this._y}px`;
-       _this._enemyImg.nativeElement.style.left = `${_this._x}px`;
-    },10,this,pageWidth,pageHeight)
+    setInterval(function (_this:EnemyTestComponent) {
+      _this.Position.Shift()
+       _this._enemyImg.nativeElement.style.top = `${_this.Position.Y}px`;
+       _this._enemyImg.nativeElement.style.left = `${_this.Position.X}px`;
+    },10,this)
   }
 
 }
